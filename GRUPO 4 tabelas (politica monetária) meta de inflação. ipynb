@@ -1,0 +1,502 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMVxcmFDeg/RlBWQVpfEFKd",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/rodrigoesborges/conju-python/blob/main/GRUPO%204%20tabelas%20(politica%20monet%C3%A1ria)%20meta%20de%20infla%C3%A7%C3%A3o.%20ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "m72_ZUfGrJDz",
+        "outputId": "598f9bb7-ce94-47f3-caca-df7e955190a3"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "       mes  ipca \n",
+            "0  2024-01   0.42\n",
+            "1  2024-02   0.83\n",
+            "2  2024-03   0.16\n"
+          ]
+        }
+      ],
+      "source": [
+        "import pandas as pd\n",
+        "df = pd.read_csv(\"../ipca_2024.csv\")\n",
+        "print(df)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "df = pd.read_csv(\"../ipca_2024.csv\",sep = \",\",decimal=\".\")\n",
+        "print(df)\n",
+        "\n",
+        "df[\"mes\"] = pd.to_datetime(df[\"mes\"])\n",
+        "\n",
+        "print(df)\n",
+        "\n",
+        "print(df[\"ipca \"].mean())"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "a813fa6f-2951-4aef-8fef-8b77fc8f501a",
+        "id": "wTzUMcaP6m9s"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "       mes  ipca \n",
+            "0  2024-01   0.42\n",
+            "1  2024-02   0.83\n",
+            "2  2024-03   0.16\n",
+            "         mes  ipca \n",
+            "0 2024-01-01   0.42\n",
+            "1 2024-02-01   0.83\n",
+            "2 2024-03-01   0.16\n",
+            "0.47\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install python-bcb"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ibQZLtqMCIid",
+        "outputId": "bbca8198-1015-4d91-962e-ae5d234de72d"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting python-bcb\n",
+            "  Downloading python_bcb-0.4.0-py3-none-any.whl.metadata (9.0 kB)\n",
+            "Requirement already satisfied: httpx>=0.24.0 in /usr/local/lib/python3.13/dist-packages (from python-bcb) (0.28.1)\n",
+            "Requirement already satisfied: lxml>=4.9.2 in /usr/local/lib/python3.13/dist-packages (from python-bcb) (6.1.3)\n",
+            "Requirement already satisfied: pandas>=2.0.0 in /usr/local/lib/python3.13/dist-packages (from python-bcb) (2.2.3)\n",
+            "Requirement already satisfied: tenacity>=8.0.0 in /usr/local/lib/python3.13/dist-packages (from python-bcb) (9.1.4)\n",
+            "Requirement already satisfied: anyio in /usr/local/lib/python3.13/dist-packages (from httpx>=0.24.0->python-bcb) (4.15.1)\n",
+            "Requirement already satisfied: certifi in /usr/local/lib/python3.13/dist-packages (from httpx>=0.24.0->python-bcb) (2026.7.22)\n",
+            "Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.13/dist-packages (from httpx>=0.24.0->python-bcb) (1.0.9)\n",
+            "Requirement already satisfied: idna in /usr/local/lib/python3.13/dist-packages (from httpx>=0.24.0->python-bcb) (3.20)\n",
+            "Requirement already satisfied: h11>=0.16 in /usr/local/lib/python3.13/dist-packages (from httpcore==1.*->httpx>=0.24.0->python-bcb) (0.16.0)\n",
+            "Requirement already satisfied: numpy>=1.26.0 in /usr/local/lib/python3.13/dist-packages (from pandas>=2.0.0->python-bcb) (2.1.3)\n",
+            "Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.13/dist-packages (from pandas>=2.0.0->python-bcb) (2.9.0.post0)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.13/dist-packages (from pandas>=2.0.0->python-bcb) (2025.2)\n",
+            "Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.13/dist-packages (from pandas>=2.0.0->python-bcb) (2026.5)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.13/dist-packages (from python-dateutil>=2.8.2->pandas>=2.0.0->python-bcb) (1.17.0)\n",
+            "Requirement already satisfied: typing_extensions>=4.16.0 in /usr/local/lib/python3.13/dist-packages (from anyio->httpx>=0.24.0->python-bcb) (4.16.0)\n",
+            "Downloading python_bcb-0.4.0-py3-none-any.whl (35 kB)\n",
+            "Installing collected packages: python-bcb\n",
+            "Successfully installed python-bcb-0.4.0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from bcb import sgs\n",
+        "metadeinflacao = sgs.get([13521,189]).fillna(method='ffill').fillna(method='bfill')\n",
+        "print(metadeinflacao)\n",
+        "print(igp)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 491
+        },
+        "id": "VbZfMSHcCZa9",
+        "outputId": "d534a5c5-cb34-4f80-e366-332f2a2af1d9"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "            13521    189\n",
+            "Date                    \n",
+            "1989-06-01    8.0  19.68\n",
+            "1989-07-01    8.0  35.90\n",
+            "1989-08-01    8.0  36.92\n",
+            "1989-09-01    8.0  39.92\n",
+            "1989-10-01    8.0  40.64\n",
+            "...           ...    ...\n",
+            "2026-05-01    3.0   0.84\n",
+            "2026-06-01    3.0  -0.50\n",
+            "2026-07-01    3.0  -1.16\n",
+            "2026-08-01    3.0  -0.22\n",
+            "2026-09-01    3.0   1.57\n",
+            "\n",
+            "[448 rows x 2 columns]\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/tmp/ipykernel_929/3763580373.py:2: FutureWarning: DataFrame.fillna with 'method' is deprecated and will raise in a future version. Use obj.ffill() or obj.bfill() instead.\n",
+            "  metadeinflacao = sgs.get([13521,189]).fillna(method='ffill').fillna(method='bfill')\n"
+          ]
+        },
+        {
+          "output_type": "error",
+          "ename": "NameError",
+          "evalue": "name 'igp' is not defined",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m/tmp/ipykernel_929/3763580373.py\u001b[0m in \u001b[0;36m<cell line: 0>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      2\u001b[0m \u001b[0mmetadeinflacao\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0msgs\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mget\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;36m13521\u001b[0m\u001b[0;34m,\u001b[0m\u001b[0;36m189\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfillna\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmethod\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'ffill'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfillna\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmethod\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m'bfill'\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mmetadeinflacao\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 4\u001b[0;31m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0migp\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m: name 'igp' is not defined"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "metadeinflacao=pd.DataFrame(metadeinflacao)\n",
+        "print(metadeinflacao)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "lZ0EVurz_5Ja",
+        "outputId": "ba4b8c4e-b863-41d1-8716-04cf7cc83454"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "            13521    189\n",
+            "Date                    \n",
+            "1989-06-01    8.0  19.68\n",
+            "1989-07-01    8.0  35.90\n",
+            "1989-08-01    8.0  36.92\n",
+            "1989-09-01    8.0  39.92\n",
+            "1989-10-01    8.0  40.64\n",
+            "...           ...    ...\n",
+            "2026-05-01    3.0   0.84\n",
+            "2026-06-01    3.0  -0.50\n",
+            "2026-07-01    3.0  -1.16\n",
+            "2026-08-01    3.0  -0.22\n",
+            "2026-09-01    3.0   1.57\n",
+            "\n",
+            "[448 rows x 2 columns]\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(metadeinflacao[\"13521\"].max())\n",
+        "\n",
+        "print(metadeinflacao[\"13521\"].min())\n",
+        "\n",
+        "print(metadeinflacao[\"13521\"].mean())\n"
+      ],
+      "metadata": {
+        "id": "R8TOCrCuDg3D",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "f9492e0c-1b87-41c1-bf47-adfc5afe47ee"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "8.0\n",
+            "3.0\n",
+            "5.294642857142857\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "9mo_VSktM1ke"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print(metadeinflacao[\"189\"].max())\n",
+        "\n",
+        "print(metadeinflacao[\"189\"].min())\n",
+        "\n",
+        "print(metadeinflacao[\"189\"].mean())\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1XxDY7cuKvT3",
+        "outputId": "ed9706c9-f488-4210-826c-927862909193"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "83.95\n",
+            "-1.93\n",
+            "4.425334821428572\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "metadeinflacao.nlargest(3,\"13521\").sort_values(\"13521\",ascending=False)[\"13521\"]"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 210
+        },
+        "id": "HCBPerRILQWW",
+        "outputId": "3fa238f3-f7f2-4cca-d6c5-7a8e94f3f9b1"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Date\n",
+              "1989-06-01    8.0\n",
+              "1989-07-01    8.0\n",
+              "1989-08-01    8.0\n",
+              "Freq: MS, Name: 13521, dtype: float64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>13521</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>Date</th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>1989-06-01</th>\n",
+              "      <td>8.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1989-07-01</th>\n",
+              "      <td>8.0</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1989-08-01</th>\n",
+              "      <td>8.0</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> float64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 58
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "1ae_lIIHMH3W"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "metadeinflacao.nlargest(3,\"189\").sort_values(\"189\",ascending=False)[\"189\"]"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 210
+        },
+        "outputId": "da99b812-cbb1-4855-f585-dfeab251d928",
+        "id": "FSebOWFlMIK3"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "Date\n",
+              "1990-03-01    83.95\n",
+              "1990-02-01    81.29\n",
+              "1990-01-01    61.46\n",
+              "Freq: -1MS, Name: 189, dtype: float64"
+            ],
+            "text/html": [
+              "<div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>189</th>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>Date</th>\n",
+              "      <th></th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>1990-03-01</th>\n",
+              "      <td>83.95</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1990-02-01</th>\n",
+              "      <td>81.29</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1990-01-01</th>\n",
+              "      <td>61.46</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div><br><label><b>dtype:</b> float64</label>"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 57
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "media=metadeinflacao[\"13521\"].mean()\n",
+        "print(media)\n",
+        "mediaigp=metadeinflacao[\"189\"].mean()\n",
+        "print(mediaigp)\n",
+        "print(len(metadeinflacao[metadeinflacao[\"189\"]<mediaigp]))\n",
+        "print(len(metadeinflacao[metadeinflacao[\"13521\"]<media]))"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "65YHyWpmM6Ou",
+        "outputId": "e98648e8-d3c0-4ae5-82e4-97f5ed20908d"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "5.294642857142857\n",
+            "4.425334821428572\n",
+            "386\n",
+            "297\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "fZszmhDu7kjI"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
